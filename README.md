@@ -26,7 +26,7 @@ Levamos em consideração a sua lista de avaliações neste site para trazer a l
 
 ```sh
     RELATORIO FINAL
-    - Duration: 			0:04:49.309173
+    - Excecução: 		0:04:49.309173
     - Tempo Assistido: 		217 Dias 7 Hrs 22 Min
     - Total de Filmes: 		920
     - Total de Series: 		80 
