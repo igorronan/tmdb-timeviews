@@ -103,7 +103,7 @@ for schema in all_types:
 end_execution = datetime.now()
 duration = end_execution-start_execution
 file.write(f"RELATORIO FINAL")
-file.write(f"\n- Duration: \t\t\t{duration}")
+file.write(f"\n- Excecução: \t\t\t{duration}")
 file.write(f"\n- Tempo Assistido: \t\t{total}")
 file.write(f"\n- Total de Filmes: \t\t{movies}")
 file.write(f"\n- Total de Series: \t\t{sessions} ")
