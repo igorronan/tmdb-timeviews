@@ -68,7 +68,7 @@ print(f"TIPO: \tTEMPO \tVOTO|MEDIA \tTITULO TEMPORADA EPISODIOS")
 all_types = ['movie','tv']
 for schema in all_types:
     total_pages = allpages(schema,'1', session_id)['total_pages']
-    for i in range(1,total_pages):
+    for i in range(1,(total_pages+1)):
         all = allpages(schema,str(i), session_id)
         for tvs in all['results']:
             tv = request('GET','https://api.themoviedb.org/3/'+schema+'/'+str(tvs['id'])+'?api_key='+api_key+'&language=pt-BR','','')
