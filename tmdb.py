@@ -1,4 +1,3 @@
-
 import requests 
 import json, math
 from datetime import datetime
@@ -8,11 +7,17 @@ password = 'password'
 
 start_execution = datetime.now()
 minutos = 0
+minutos_tv = 0
+minutos_mv = 0
+tempo_mv = 0
+tempo_tv=0
 movies = 0
 sessions = 0
 episodes = 0
 string_file = ''
-file= open("Resultado.txt","w+")
+fil=datetime.now().date()
+
+file= open(str(fil)+".txt","w+")
 
 def horas(total_minutes, format = 'horas'):
     if format == 'horas':
@@ -68,7 +73,7 @@ print(f"TIPO: \tTEMPO \tVOTO|MEDIA \tTITULO TEMPORADA EPISODIOS")
 all_types = ['movie','tv']
 for schema in all_types:
     total_pages = allpages(schema,'1', session_id)['total_pages']
-    for i in range(1,total_pages):
+    for i in range(1,(total_pages+1)):
         all = allpages(schema,str(i), session_id)
         for tvs in all['results']:
             tv = request('GET','https://api.themoviedb.org/3/'+schema+'/'+str(tvs['id'])+'?api_key='+api_key+'&language=pt-BR','','')
@@ -77,24 +82,38 @@ for schema in all_types:
                 episodes = episodes + tv['number_of_episodes']
                 sessions = sessions +1
                 try:
-                    tempo = (tv['episode_run_time'][0] * tv['number_of_episodes'])
+                    try:
+                        tempo = (tv['episode_run_time'][0] * tv['number_of_episodes'])
+                        tempo_tv = tempo
+                    except:
+                        tempo = (tv['last_episode_to_air']['runtime'] * tv['number_of_episodes'])
+                        tempo_tv = tempo
                     title = tv['name']
                     episode = f"| Sessions: {tv['number_of_seasons']} Episodes: {tv['number_of_episodes']}"
                 except:
                     print(f"Error {str(tv['id'])}")
                     tempo = 0
+                    tempo_tv = tempo
                     title = tv['name']
             if schema == 'movie':
                 movies = movies+1
                 try:
                     tempo = tv['runtime']
+                    tempo_mv = tempo
                     title = tv['title']
                 except:
                     tempo = 0
+                    tempo_mv = tempo
                     title = tv['title']
 
+            minutos_tv = minutos_tv + tempo_tv
+            minutos_mv = minutos_mv + tempo_mv
             minutos = minutos + tempo
+            
+            total_tv = horas(minutos_tv, 'dias')
+            total_mv = horas(minutos_mv, 'dias')
             total = horas(minutos, 'dias')
+            
 
             print(f"{schema}: \t{horas(tempo)} \t{tvs['rating']:04}|{tvs['vote_average']:04} \t{title} {episode}")
             string_file = string_file + (f"{schema}: \t{horas(tempo)} \t{tvs['rating']:04}|{tvs['vote_average']:04} \t{title} {episode}\n")
@@ -103,11 +122,13 @@ for schema in all_types:
 end_execution = datetime.now()
 duration = end_execution-start_execution
 file.write(f"RELATORIO FINAL")
-file.write(f"\n- Duration: \t\t\t{duration}")
+file.write(f"\n- Duração: \t\t\t{duration}")
 file.write(f"\n- Tempo Assistido: \t\t{total}")
+file.write(f"\n- Tempo Filmes: \t\t{total_mv}")
+file.write(f"\n- Tempo Series: \t\t{total_tv}")
 file.write(f"\n- Total de Filmes: \t\t{movies}")
 file.write(f"\n- Total de Series: \t\t{sessions} ")
-file.write(f"\n- Total de Episodios: \t{episodes} ")
+file.write(f"\n- Total de Episodios: \t\t{episodes} ")
 file.write(f"\n\nLISTA GERAL")
 file.write(f"\nTIPO: \tTEMPO \tVOTO|MEDIA \tTITULO TEMPORADA EPISODIOS")
 file.write(f"\n{string_file}")
